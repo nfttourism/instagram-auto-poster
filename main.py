@@ -65,3 +65,4 @@ def post_to_instagram(data: PostData):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
+update main.py to add /post endpoint
