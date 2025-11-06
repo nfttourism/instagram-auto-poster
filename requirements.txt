@@ -1,2 +1,6 @@
 fastapi
 uvicorn
+instagrapi
+requests
+pydantic
+python-multipart
