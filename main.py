@@ -39,19 +39,17 @@ class PostData(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "✅ Instagram Auto Poster is running and ready!", "username": USERNAME}
+    return {"message": "✅ Instagram Auto Poster is running!", "username": USERNAME}
 
 
 @app.post("/post")
 def post_to_instagram(data: PostData):
     cl = get_client()
 
-    # دانلود فایل
     response = requests.get(data.media_url, timeout=30)
     if response.status_code != 200:
         raise HTTPException(status_code=400, detail="Error downloading media file")
 
-    # ذخیره موقت
     tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
     tmp_file.write(response.content)
     tmp_file.flush()
@@ -65,4 +63,3 @@ def post_to_instagram(data: PostData):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
-update main.py to add /post endpoint
