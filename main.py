@@ -1,36 +1,14 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from instagrapi import Client
-import requests, tempfile, os
+# diagnostic_main.py — برای تشخیص سریع
+import os, time
+from fastapi import FastAPI
+import uvicorn
 
-app = FastAPI(title="Instagram Auto Poster")
-
-USERNAME = os.getenv("IG_USERNAME", "visabaz")
-PASSWORD = os.getenv("IG_PASSWORD", "hubir7211")
+app = FastAPI()
 
 @app.get("/")
-def home():
-    return {"message": "✅ Instagram Auto Poster is running and ready!", "username": USERNAME}
+def root():
+    return {"message": "diagnostic server running", "env": dict(list(os.environ.items())[:10])}
 
-class MediaPost(BaseModel):
-    media_url: str
-    caption: str
-
-@app.post("/post")
-def post_to_instagram(data: MediaPost):
-    try:
-        r = requests.get(data.media_url, timeout=20)
-        if r.status_code != 200:
-            raise HTTPException(status_code=400, detail="Cannot download media")
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        tmp.write(r.content)
-        tmp.close()
-
-        cl = Client()
-        cl.login(USERNAME, PASSWORD)
-
-        media = cl.photo_upload(tmp.name, data.caption)
-        return {"status": "✅ Uploaded successfully", "media_id": media.pk}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+if __name__ == "__main__":
+    print("Starting diagnostic uvicorn...")
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
