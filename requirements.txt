@@ -1,4 +1,10 @@
+pip>=23.0
+setuptools
+wheel
+cryptography
 fastapi
 uvicorn
 instagrapi
 requests
+pydantic
+python-multipart
